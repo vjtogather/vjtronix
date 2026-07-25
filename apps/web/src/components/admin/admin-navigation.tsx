@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, KeyRound, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
+import { BookOpen, Bot, ClipboardList, FolderKanban, KeyRound, LayoutDashboard, ShieldCheck, ShoppingBag, Users } from "lucide-react";
 import { FileText } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -11,6 +11,10 @@ const items = [
   { href: "/admin", icon: LayoutDashboard, label: "Overview" },
   { href: "/admin/users", icon: Users, label: "Users" },
   { href: "/admin/blog", icon: FileText, label: "Blog" },
+  { href: "/admin/courses", icon: BookOpen, label: "Courses" },
+  { href: "/admin/projects", icon: FolderKanban, label: "Projects" },
+  { href: "/admin/products", icon: ShoppingBag, label: "Products" },
+  { href: "/admin/ai", icon: Bot, label: "AI assistant" },
   { href: "/admin/roles", icon: ShieldCheck, label: "Roles", superAdminOnly: true },
   { href: "/admin/permissions", icon: KeyRound, label: "Permissions", superAdminOnly: true },
   { href: "/admin/audit-logs", icon: ClipboardList, label: "Audit logs" },

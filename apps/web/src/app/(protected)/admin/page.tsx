@@ -1,28 +1,123 @@
 import type { Metadata } from "next";
+import { Activity, FileText, FolderKanban, Users } from "lucide-react";
 import Link from "next/link";
-import { Activity, KeyRound, ShieldCheck, UserCheck, Users } from "lucide-react";
 
+import { DashboardStatCard } from "@/components/admin/dashboard/dashboard-stat-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
 
-export const metadata: Metadata = { title: "Admin dashboard", robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: "Admin dashboard",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminDashboardPage() {
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  const [users, activeUsers, roles, permissions, weeklyEvents, recentAuditLogs, recentUsers] = await Promise.all([
+  const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const [userCount, postCount, projectCount, weeklyEventCount, recentActivity, recentUsers] = await Promise.all([
     prisma.user.count(),
-    prisma.user.count({ where: { isActive: true } }),
-    prisma.role.count(),
-    prisma.permission.count(),
-    prisma.auditLog.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
-    prisma.auditLog.findMany({ orderBy: { createdAt: "desc" }, take: 6, select: { id: true, event: true, createdAt: true, actor: { select: { name: true, email: true } } } }),
-    prisma.user.findMany({ orderBy: { createdAt: "desc" }, take: 5, select: { id: true, name: true, email: true, createdAt: true, isActive: true } }),
+    prisma.post.count(),
+    prisma.project.count(),
+    prisma.auditLog.count({ where: { createdAt: { gte: weekStart } } }),
+    prisma.auditLog.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 6,
+      select: {
+        id: true,
+        event: true,
+        createdAt: true,
+        actor: { select: { name: true, email: true } },
+      },
+    }),
+    prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { id: true, name: true, email: true, isActive: true },
+    }),
   ]);
 
-  return <div className="space-y-6 p-5 sm:p-8 lg:p-10"><div><p className="text-sm font-semibold uppercase tracking-[0.16em] text-sky-300">Administration</p><h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">Platform overview</h1><p className="mt-2 text-sm leading-6 text-slate-400">Monitor accounts, access controls, and recent platform activity.</p></div><section aria-label="Platform analytics" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><Metric icon={Users} label="Total users" value={String(users)} /><Metric icon={UserCheck} label="Active users" value={String(activeUsers)} /><Metric icon={ShieldCheck} label="Roles" value={String(roles)} /><Metric icon={KeyRound} label="Permissions" value={String(permissions)} /></section><div className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]"><Card><CardHeader><CardTitle>Recent audit activity</CardTitle><CardDescription>{weeklyEvents} events recorded in the last 7 days.</CardDescription></CardHeader><CardContent>{recentAuditLogs.length === 0 ? <EmptyState icon={Activity} message="No audit events have been recorded yet." /> : <ol className="divide-y divide-white/10">{recentAuditLogs.map((log) => <li className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0" key={log.id}><div className="min-w-0"><p className="truncate text-sm font-medium text-slate-200">{formatEvent(log.event)}</p><p className="mt-1 truncate text-xs text-slate-500">{log.actor?.name || log.actor?.email || "System"}</p></div><time className="shrink-0 text-xs text-slate-500" dateTime={log.createdAt.toISOString()}>{formatDate(log.createdAt)}</time></li>)}</ol>}</CardContent><div className="border-t border-white/10 px-4 py-3"><Link className="text-sm font-medium text-sky-200 hover:text-sky-100" href="/admin/audit-logs">View all audit logs</Link></div></Card><Card><CardHeader><CardTitle>Newest users</CardTitle><CardDescription>Recently created platform accounts.</CardDescription></CardHeader><CardContent>{recentUsers.length === 0 ? <EmptyState icon={Users} message="New user accounts will appear here." /> : <ul className="space-y-3">{recentUsers.map((user) => <li className="rounded-lg bg-white/[0.04] px-4 py-3" key={user.id}><div className="flex items-center justify-between gap-3"><p className="truncate text-sm font-medium text-slate-200">{user.name || "Unnamed user"}</p><span className={user.isActive ? "text-xs text-emerald-200" : "text-xs text-rose-200"}>{user.isActive ? "Active" : "Inactive"}</span></div><p className="mt-1 truncate text-xs text-slate-500">{user.email || "No email"}</p></li>)}</ul>}</CardContent><div className="border-t border-white/10 px-4 py-3"><Link className="text-sm font-medium text-sky-200 hover:text-sky-100" href="/admin/users">Manage users</Link></div></Card></div></div>;
+  return (
+    <div className="space-y-8 p-5 sm:p-8 lg:p-10">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-semibold tracking-[0.16em] text-sky-600 uppercase dark:text-sky-300">VJtronix workspace</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Dashboard</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">A focused view of your platform, content, and community activity.</p>
+        </div>
+        <Link className="text-sm font-medium text-sky-700 transition hover:text-sky-600 dark:text-sky-300 dark:hover:text-sky-200" href="/admin/blog/new">
+          Create a blog post →
+        </Link>
+      </div>
+
+      <section aria-label="Platform overview" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <DashboardStatCard description="Registered platform members" href="/admin/users" icon={Users} label="Total users" value={userCount} />
+        <DashboardStatCard description="Articles across all statuses" href="/admin/blog" icon={FileText} label="Blog posts" value={postCount} />
+        <DashboardStatCard description="Projects in your portfolio" href="/admin/projects" icon={FolderKanban} label="Portfolio projects" value={projectCount} />
+        <DashboardStatCard description="Recorded over the last 7 days" href="/admin/audit-logs" icon={Activity} label="Weekly activity" value={weeklyEventCount} />
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
+        <Card>
+          <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
+            <div>
+              <CardTitle>Recent activity</CardTitle>
+              <CardDescription>Latest platform events and administrative actions.</CardDescription>
+            </div>
+            <Link className="shrink-0 text-sm font-medium text-sky-700 hover:text-sky-600 dark:text-sky-300 dark:hover:text-sky-200" href="/admin/audit-logs">View all</Link>
+          </CardHeader>
+          <CardContent>
+            {recentActivity.length ? (
+              <ol className="divide-y">
+                {recentActivity.map((entry) => (
+                  <li className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0" key={entry.id}>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-foreground">{formatEvent(entry.event)}</p>
+                      <p className="mt-1 truncate text-xs text-muted-foreground">{entry.actor?.name || entry.actor?.email || "System"}</p>
+                    </div>
+                    <time className="shrink-0 text-xs text-muted-foreground" dateTime={entry.createdAt.toISOString()}>{formatDate(entry.createdAt)}</time>
+                  </li>
+                ))}
+              </ol>
+            ) : <EmptyState message="Activity will appear here as your team uses the platform." />}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
+            <div>
+              <CardTitle>New users</CardTitle>
+              <CardDescription>Recently created accounts.</CardDescription>
+            </div>
+            <Link className="shrink-0 text-sm font-medium text-sky-700 hover:text-sky-600 dark:text-sky-300 dark:hover:text-sky-200" href="/admin/users">Manage</Link>
+          </CardHeader>
+          <CardContent>
+            {recentUsers.length ? (
+              <ul className="space-y-3">
+                {recentUsers.map((user) => (
+                  <li className="rounded-xl border bg-card p-3" key={user.id}>
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="truncate text-sm font-medium text-foreground">{user.name || "Unnamed user"}</p>
+                      <span className={user.isActive ? "text-xs font-medium text-emerald-600 dark:text-emerald-300" : "text-xs font-medium text-rose-600 dark:text-rose-300"}>{user.isActive ? "Active" : "Inactive"}</span>
+                    </div>
+                    <p className="mt-1 truncate text-xs text-muted-foreground">{user.email || "No email address"}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : <EmptyState message="New member accounts will appear here." />}
+          </CardContent>
+        </Card>
+      </section>
+    </div>
+  );
 }
 
-function Metric({ icon: Icon, label, value }: { icon: typeof Users; label: string; value: string }) { return <Card><CardContent className="flex items-center gap-4 pt-4"><span className="grid size-10 place-items-center rounded-lg bg-sky-300/10 text-sky-200"><Icon className="size-5" aria-hidden="true" /></span><div><p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p><p className="mt-1 text-xl font-semibold text-white">{value}</p></div></CardContent></Card>; }
-function EmptyState({ icon: Icon, message }: { icon: typeof Activity; message: string }) { return <div className="grid min-h-44 place-items-center rounded-lg border border-dashed border-white/15 bg-white/[0.025] p-6 text-center"><div><Icon className="mx-auto size-6 text-slate-500" aria-hidden="true" /><p className="mt-3 text-sm text-slate-500">{message}</p></div></div>; }
-function formatEvent(event: string) { return event.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (character) => character.toUpperCase()); }
-function formatDate(date: Date) { return new Intl.DateTimeFormat("en", { day: "numeric", month: "short" }).format(date); }
+function EmptyState({ message }: { message: string }) {
+  return <div className="grid min-h-44 place-items-center rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">{message}</div>;
+}
+
+function formatEvent(event: string) {
+  return event.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat("en", { day: "numeric", month: "short" }).format(date);
+}

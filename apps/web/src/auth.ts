@@ -13,7 +13,7 @@ import { RoleName } from "@/generated/prisma/client";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
   pages: {
     signIn: "/sign-in",
@@ -96,13 +96,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return existingUser?.isActive ?? true;
     },
-    async session({ session, user }) {
+    async session({ session, token }) {
+      if (!token.sub) {
+        return session;
+      }
+
       const userRoles = await prisma.userRole.findMany({
-        where: { userId: user.id },
+        where: { userId: token.sub },
         select: { role: { select: { name: true } } },
       });
 
-      session.user.id = user.id;
+      session.user.id = token.sub;
       session.user.roles = userRoles.map(({ role }) => role.name) as RoleName[];
 
       return session;

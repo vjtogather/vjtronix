@@ -15,6 +15,7 @@ const errorMessages: Record<string, string> = {
   AccessDenied: "This account is not permitted to sign in.",
   Configuration: "Sign-in is temporarily unavailable. Please try again later.",
   CredentialsSignin: "Email or password is incorrect.",
+  MissingCSRF: "Your sign-in request was blocked for security. Reload the page and try again.",
   EmailSignin: "Enter a valid email address to continue.",
   OAuthAccountNotLinked:
     "This email is already associated with a different sign-in method.",

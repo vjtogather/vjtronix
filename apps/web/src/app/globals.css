@@ -56,12 +56,43 @@ html {
   scroll-behavior: smooth;
 }
 
+@keyframes coming-soon-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-coming-soon-float {
+    animation: coming-soon-float 5s ease-in-out infinite;
+  }
+}
+
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
 a {
   text-decoration: none;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.input:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring), transparent 55%);
 }
 
 ::selection {

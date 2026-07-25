@@ -1,20 +1,33 @@
 import type { Metadata } from "next";
+import { CircuitBoard } from "lucide-react";
 
+import { ComingSoon } from "@/components/common/ComingSoon";
 import { SiteShell } from "@/components/layout/SiteShell";
-import { PlatformPageTemplate } from "@/components/sections/PlatformPageTemplate";
-import { getPlatformPage } from "@/data/platform-pages";
 
-const page = getPlatformPage("shop");
+const shopFeatures = [
+  "Embedded Projects",
+  "PCB Designs",
+  "Hardware Kits",
+  "Premium Courses",
+  "Source Code",
+  "Components Store",
+] as const;
 
 export const metadata: Metadata = {
-  title: page.title,
-  description: page.description,
+  title: "Shop Coming Soon",
+  description: "VJtronix is building India's first Embedded Engineering Marketplace.",
 };
 
 export default function ShopPage() {
   return (
     <SiteShell>
-      <PlatformPageTemplate page={page} />
+      <ComingSoon
+        title="Coming Soon"
+        description="We are building India's first Embedded Engineering Marketplace."
+        features={shopFeatures}
+        illustration={CircuitBoard}
+        productName="the VJtronix Shop"
+      />
     </SiteShell>
   );
 }

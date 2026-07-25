@@ -21,6 +21,41 @@ enum PostStatus {
   PUBLISHED
 }
 
+enum CategoryStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
 model User {
   id              String     @id @default(cuid())
   name            String?
@@ -42,6 +77,81 @@ model User {
   roles           UserRole[]
   auditLogs       AuditLog[] @relation("AuditActor")
   posts           Post[]     @relation("PostAuthor")
+  blogs           Blog[]     @relation("BlogAuthor")
+  courses         Course[]   @relation("CourseCreator")
+  carts           Cart[]
+  wishlist        Wishlist[]
+  orders          Order[]
+}
+
+model Course {
+  id               String         @id @default(cuid())
+  title            String
+  slug             String         @unique
+  shortDescription String         @db.Text
+  description      String         @db.Text
+  thumbnail        String?        @db.Text
+  level            CourseLevel    @default(BEGINNER)
+  language         String
+  duration         Int            @default(0)
+  price            Decimal        @default(0) @db.Decimal(10, 2)
+  isFree           Boolean        @default(true)
+  status           CourseStatus   @default(DRAFT)
+  createdById      String
+  categoryId       String?
+  createdBy        User           @relation("CourseCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  category         CourseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  modules          CourseModule[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([status, updatedAt])
+  @@index([categoryId])
+  @@index([createdById])
+}
+
+model CourseCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  courses     Course[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CourseModule {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  order       Int
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([courseId, order])
+  @@index([courseId])
+}
+
+model Lesson {
+  id        String       @id @default(cuid())
+  title     String
+  slug      String
+  content   String       @db.Text
+  videoUrl  String?      @db.Text
+  duration  Int          @default(0)
+  isPreview Boolean      @default(false)
+  order     Int
+  moduleId  String
+  module    CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@unique([moduleId, slug])
+  @@unique([moduleId, order])
+  @@index([moduleId])
 }
 
 model Post {
@@ -68,15 +178,71 @@ model Post {
 }
 
 model Category {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String?  @db.Text
-  posts       Post[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String         @id @default(cuid())
+  name           String
+  slug           String         @unique
+  icon           String?
+  banner         String?        @db.Text
+  description    String?        @db.Text
+  seoTitle       String?
+  seoDescription String?        @db.Text
+  status         CategoryStatus @default(ACTIVE)
+  order          Int            @default(0)
+  posts          Post[]
+  subCategories  SubCategory[]
+  blogs          Blog[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
   @@unique([name])
+  @@index([status, order])
+}
+
+model SubCategory {
+  id          String         @id @default(cuid())
+  categoryId  String
+  name        String
+  slug        String
+  icon        String?
+  description String?        @db.Text
+  order       Int            @default(0)
+  status      CategoryStatus @default(ACTIVE)
+  category    Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  blogs       Blog[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([categoryId, slug])
+  @@unique([categoryId, name])
+  @@index([categoryId, status, order])
+}
+
+model Blog {
+  id             String      @id @default(cuid())
+  title          String
+  slug           String      @unique
+  excerpt        String?     @db.Text
+  content        String      @db.Text
+  thumbnail      String?     @db.Text
+  banner         String?     @db.Text
+  featured       Boolean     @default(false)
+  published      Boolean     @default(false)
+  readingTime    Int         @default(1)
+  views          Int         @default(0)
+  categoryId     String
+  subCategoryId  String
+  authorId       String
+  seoTitle       String?
+  seoDescription String?     @db.Text
+  category       Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  subCategory    SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Restrict)
+  author         User        @relation("BlogAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([published, featured, updatedAt])
+  @@index([categoryId, subCategoryId])
+  @@index([authorId, createdAt])
 }
 
 model Tag {
@@ -176,4 +342,149 @@ model AuditLog {
 
   @@index([actorId, createdAt])
   @@index([event, createdAt])
+}
+
+model Project {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  shortDescription String      @db.Text
+  description    String        @db.Text
+  technologies   String[]
+  githubUrl      String?       @db.Text
+  liveDemoUrl    String?       @db.Text
+  coverImage     String?       @db.Text
+  galleryImages  String[]
+  featured       Boolean       @default(false)
+  status         ProjectStatus @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?       @db.Text
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status, featured, updatedAt])
+}
+
+model ProductCategory {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?   @db.Text
+  image       String?   @db.Text
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id               String        @id @default(cuid())
+  name             String
+  slug             String        @unique
+  shortDescription String        @db.Text
+  description      String        @db.Text
+  sku              String        @unique
+  price            Decimal       @db.Decimal(10, 2)
+  compareAtPrice   Decimal?      @db.Decimal(10, 2)
+  stock            Int           @default(0)
+  images           String[]
+  galleryImages    String[]
+  status           ProductStatus @default(DRAFT)
+  featured         Boolean       @default(false)
+  categoryId       String?
+  category         ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  cartItems        CartItem[]
+  wishlistItems    Wishlist[]
+  orderItems       OrderItem[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([status, categoryId, updatedAt])
+  @@index([featured, status])
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+  @@index([productId])
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([productId])
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  userId    String
+  status    OrderStatus @default(PENDING)
+  subtotal  Decimal     @db.Decimal(10, 2)
+  total     Decimal     @db.Decimal(10, 2)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String?
+  title       String
+  sku         String
+  unitPrice   Decimal  @db.Decimal(10, 2)
+  quantity    Int
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([productId])
+}
+
+model AiPromptTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  prompt    String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AiFaq {
+  id        String   @id @default(cuid())
+  question  String   @unique
+  answer    String   @db.Text
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AiConfiguration {
+  id             String   @id @default("default")
+  welcomeMessage String   @db.Text
+  systemPrompt   String   @db.Text
+  updatedAt      DateTime @updatedAt
 }

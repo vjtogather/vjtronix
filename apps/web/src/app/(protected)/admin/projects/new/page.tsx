@@ -1,0 +1,1 @@
+import { ProjectEditor } from "@/components/admin/project-editor"; export default function NewProjectPage() { return <div className="p-5 sm:p-8"><h1 className="mb-6 text-3xl font-semibold">New project</h1><ProjectEditor /></div>; }

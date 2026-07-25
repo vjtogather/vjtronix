@@ -1,0 +1,1 @@
+export default function CoursesLoading() { return <div className="animate-pulse space-y-6 p-5 sm:p-8 lg:p-10"><div className="h-10 w-48 rounded bg-white/10" /><div className="h-12 rounded bg-white/[.06]" /><div className="h-72 rounded-xl bg-white/[.06]" /></div>; }

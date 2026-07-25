@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
+import { BookOpen } from "lucide-react";
 
+import { ComingSoon } from "@/components/common/ComingSoon";
 import { SiteShell } from "@/components/layout/SiteShell";
-import { PlatformPageTemplate } from "@/components/sections/PlatformPageTemplate";
-import { getPlatformPage } from "@/data/platform-pages";
 
-const page = getPlatformPage("courses");
+const courseFeatures = ["STM32", "ESP32", "RTOS", "Linux", "Embedded C", "PCB Design"] as const;
 
 export const metadata: Metadata = {
-  title: page.title,
-  description: page.description,
+  title: "Courses Coming Soon",
+  description: "Professional Embedded Engineering courses are under development.",
 };
 
 export default function CoursesPage() {
   return (
     <SiteShell>
-      <PlatformPageTemplate page={page} />
+      <ComingSoon
+        title="Courses Coming Soon"
+        description="Professional Embedded Engineering courses are under development."
+        features={courseFeatures}
+        illustration={BookOpen}
+        productName="VJtronix Courses"
+      />
     </SiteShell>
   );
 }

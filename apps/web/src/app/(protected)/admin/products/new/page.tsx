@@ -1,0 +1,1 @@
+import { prisma } from "@/lib/prisma"; import { ProductEditor } from "@/components/admin/product-editor"; export default async function NewProduct(){const categories=await prisma.productCategory.findMany({select:{id:true,name:true}});return <div className="p-5 sm:p-8"><h1 className="mb-6 text-3xl font-semibold">New product</h1><ProductEditor categories={categories}/></div>}

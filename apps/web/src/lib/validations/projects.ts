@@ -1,0 +1,3 @@
+import { z } from "zod";
+const url = z.string().url().optional().or(z.literal(""));
+export const projectSchema = z.object({ title: z.string().trim().min(3).max(180), slug: z.string().trim().max(200).optional(), shortDescription: z.string().trim().min(10).max(500), description: z.string().min(1).max(200_000), technologies: z.array(z.string().trim().min(1).max(50)).min(1).max(30), githubUrl: url, liveDemoUrl: url, coverImage: z.string().max(900_000).optional().or(z.literal("")), galleryImages: z.array(z.string().max(900_000)).max(20), featured: z.boolean(), status: z.enum(["DRAFT", "PUBLISHED"]), seoTitle: z.string().trim().max(60).optional(), seoDescription: z.string().trim().max(160).optional() });

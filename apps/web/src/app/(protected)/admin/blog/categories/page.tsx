@@ -1,13 +1,77 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { CategoryTable } from "@/app/(protected)/admin/blog/categories/category-table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { CategoryStatus, Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
-import { deleteCategory, saveCategory } from "../taxonomy-actions";
+export const metadata: Metadata = { title: "Categories", robots: { index: false, follow: false } };
 
-export default async function CategoriesPage() {
-  const categories = await prisma.category.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true, slug: true, description: true } });
-  return <div className="space-y-6 p-5 sm:p-8 lg:p-10"><div><Link className="text-sm font-medium text-sky-200 hover:text-sky-100" href="/admin/blog">← Back to blog</Link><h1 className="mt-4 text-3xl font-semibold text-white">Categories</h1></div><Card><CardHeader><CardTitle>Create category</CardTitle><CardDescription>Name and slug must be unique.</CardDescription></CardHeader><CardContent><form action={saveCategory} className="grid gap-3 md:grid-cols-3"><Input name="name" placeholder="Name" required /><Input name="slug" placeholder="Slug (optional)" /><Button type="submit">Create</Button></form></CardContent></Card><Card><CardContent className="space-y-3 pt-6">{categories.map((category) => <form action={saveCategory} className="grid gap-2 rounded-lg border border-white/10 p-3 md:grid-cols-[1fr_1fr_2fr_auto_auto]" key={category.id}><input name="id" type="hidden" value={category.id} /><Input defaultValue={category.name} name="name" required /><Input defaultValue={category.slug} name="slug" required /><Input defaultValue={category.description || ""} name="description" placeholder="Description" /><Button type="submit" variant="outline">Save</Button><button className="h-8 text-sm text-rose-200" formAction={deleteCategory} type="submit">Delete</button></form>)}</CardContent></Card></div>;
+const pageSize = 10;
+type SearchParams = { page?: string; search?: string; status?: string };
+
+export default async function CategoriesPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const params = await searchParams;
+  const search = params.search?.trim() ?? "";
+  const status = Object.values(CategoryStatus).find((value) => value === params.status);
+  const page = Math.max(1, Number(params.page) || 1);
+  const where: Prisma.CategoryWhereInput = {
+    ...(status ? { status } : {}),
+    ...(search ? { OR: [{ name: { contains: search, mode: "insensitive" } }, { slug: { contains: search, mode: "insensitive" } }] } : {}),
+  };
+  const [total, categories] = await Promise.all([
+    prisma.category.count({ where }),
+    prisma.category.findMany({
+      where,
+      orderBy: { updatedAt: "desc" },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      select: { id: true, name: true, slug: true, icon: true, banner: true, description: true, seoTitle: true, seoDescription: true, status: true, order: true, createdAt: true, updatedAt: true, _count: { select: { posts: true, blogs: true } } },
+    }),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  return (
+    <div className="space-y-6 p-5 sm:p-8 lg:p-10">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <Link className="text-sm font-medium text-sky-700 hover:text-sky-600 dark:text-sky-300 dark:hover:text-sky-200" href="/admin/blog">← Back to blogs</Link>
+          <p className="mt-5 text-sm font-semibold tracking-[0.16em] text-sky-600 uppercase dark:text-sky-300">Content</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Categories</h1>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Organize VJtronix content with searchable, SEO-ready categories.</p>
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Category library</CardTitle>
+          <CardDescription>{total} categor{total === 1 ? "y" : "ies"} matching the current filters.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          <form className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_10rem_auto]" method="get">
+            <input className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" defaultValue={search} name="search" placeholder="Search name or slug" />
+            <select className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm" defaultValue={status || ""} name="status"><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="INACTIVE">Inactive</option></select>
+            <button className="h-8 rounded-lg border border-input px-3 text-sm font-medium transition hover:bg-muted" type="submit">Filter</button>
+          </form>
+          {categories.length ? <CategoryTable categories={categories.map((category) => ({ ...category, createdAt: category.createdAt.toISOString(), updatedAt: category.updatedAt.toISOString(), postCount: category._count.posts + category._count.blogs }))} /> : <EmptyState />}
+          {totalPages > 1 ? <Pagination page={page} search={search} status={status} totalPages={totalPages} /> : null}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function EmptyState() {
+  return <div className="grid min-h-56 place-items-center rounded-xl border border-dashed p-8 text-center"><div><p className="font-medium text-foreground">No categories found</p><p className="mt-2 text-sm text-muted-foreground">Create a category or adjust the current filters.</p></div></div>;
+}
+
+function Pagination({ page, search, status, totalPages }: { page: number; search: string; status?: CategoryStatus; totalPages: number }) {
+  const href = (nextPage: number) => {
+    const query = new URLSearchParams({ page: String(nextPage) });
+    if (search) query.set("search", search);
+    if (status) query.set("status", status);
+    return `/admin/blog/categories?${query}`;
+  };
+  return <div className="flex items-center justify-between border-t pt-5 text-sm"><p className="text-muted-foreground">Page {page} of {totalPages}</p><div className="flex gap-2">{page > 1 ? <Link className="rounded-lg border px-3 py-1.5 font-medium hover:bg-muted" href={href(page - 1)}>Previous</Link> : null}{page < totalPages ? <Link className="rounded-lg border px-3 py-1.5 font-medium hover:bg-muted" href={href(page + 1)}>Next</Link> : null}</div></div>;
 }
