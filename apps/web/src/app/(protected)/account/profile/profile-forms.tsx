@@ -67,7 +67,13 @@ export function ProfileForms({ hasPassword, user }: ProfileFormsProps) {
       return;
     }
 
-    const avatarDataUrl = avatar ? await readFileAsDataUrl(avatar) : undefined;
+    let avatarDataUrl: string | undefined;
+    try {
+      avatarDataUrl = avatar ? await readFileAsDataUrl(avatar) : undefined;
+    } catch {
+      setProfileMessage("Unable to read the selected image. Please try again.");
+      return;
+    }
     startProfileTransition(async () => {
       const result = await updateProfile({ name: values.name, phone: values.phone, avatarDataUrl });
       applyFieldErrors(result.fieldErrors, profileForm);

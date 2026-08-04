@@ -14,11 +14,11 @@ export const metadata: Metadata = {
 export default async function AdminDashboardPage() {
   const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const [userCount, postCount, projectCount, weeklyEventCount, recentActivity, recentUsers] = await Promise.all([
-    prisma.user.count(),
-    prisma.post.count(),
-    prisma.project.count(),
-    prisma.auditLog.count({ where: { createdAt: { gte: weekStart } } }),
-    prisma.auditLog.findMany({
+    optionalQuery(() => prisma.user.count(), 0),
+    optionalQuery(() => prisma.post.count(), 0),
+    optionalQuery(() => prisma.project.count(), 0),
+    optionalQuery(() => prisma.auditLog.count({ where: { createdAt: { gte: weekStart } } }), 0),
+    optionalQuery(() => prisma.auditLog.findMany({
       orderBy: { createdAt: "desc" },
       take: 6,
       select: {
@@ -27,12 +27,12 @@ export default async function AdminDashboardPage() {
         createdAt: true,
         actor: { select: { name: true, email: true } },
       },
-    }),
-    prisma.user.findMany({
+    }), []),
+    optionalQuery(() => prisma.user.findMany({
       orderBy: { createdAt: "desc" },
       take: 5,
       select: { id: true, name: true, email: true, isActive: true },
-    }),
+    }), []),
   ]);
 
   return (
@@ -120,4 +120,12 @@ function formatEvent(event: string) {
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en", { day: "numeric", month: "short" }).format(date);
+}
+
+async function optionalQuery<T>(query: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await query();
+  } catch {
+    return fallback;
+  }
 }

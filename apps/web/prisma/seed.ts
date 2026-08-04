@@ -68,7 +68,6 @@ async function main() {
           update: {},
         }),
       ]);
-      console.info(`Assigned ADMIN role to existing user ${adminEmail}.`);
     } else {
       await prisma.user.create({
         data: {
@@ -82,7 +81,6 @@ async function main() {
           },
         },
       });
-      console.info(`Seeded default admin user: ${adminEmail}`);
     }
   }
 }

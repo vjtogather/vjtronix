@@ -71,15 +71,13 @@ export async function updateProfile(input: unknown): Promise<ActionResult> {
         ...(avatarDataUrl !== undefined ? { image: avatarDataUrl } : {}),
       },
     });
-    await prisma.auditLog.create({
-      data: { actorId: session.user.id, event: "ACCOUNT_PROFILE_UPDATED" },
-    });
+    await recordAuditEvent(session.user.id, "ACCOUNT_PROFILE_UPDATED");
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       return { fieldErrors: { phone: ["This phone number is already in use."] } };
     }
 
-    throw error;
+    return { error: "Unable to update your profile. Please try again." };
   }
 
   revalidatePath("/account");
@@ -94,10 +92,14 @@ export async function changePassword(input: unknown): Promise<ActionResult> {
     return { fieldErrors: parsedInput.error.flatten().fieldErrors };
   }
 
-  const user = await prisma.user.findUniqueOrThrow({
+  const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { password: true },
   });
+
+  if (!user) {
+    return { error: "Your account could not be found. Please sign in again." };
+  }
 
   if (user.password) {
     const passwordMatches = await verifyPassword(parsedInput.data.currentPassword, user.password);
@@ -107,15 +109,24 @@ export async function changePassword(input: unknown): Promise<ActionResult> {
     }
   }
 
-  await prisma.$transaction([
-    prisma.user.update({
+  try {
+    await prisma.user.update({
       where: { id: session.user.id },
       data: { password: await hashPassword(parsedInput.data.newPassword) },
-    }),
-    prisma.auditLog.create({
-      data: { actorId: session.user.id, event: "ACCOUNT_PASSWORD_CHANGED" },
-    }),
-  ]);
+    });
+  } catch {
+    return { error: "Unable to update your password. Please try again." };
+  }
+
+  await recordAuditEvent(session.user.id, "ACCOUNT_PASSWORD_CHANGED");
 
   return { success: user.password ? "Password changed." : "Password created." };
+}
+
+async function recordAuditEvent(actorId: string, event: string) {
+  try {
+    await prisma.auditLog.create({ data: { actorId, event } });
+  } catch {
+    // Audit logging is non-critical for account updates.
+  }
 }

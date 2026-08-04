@@ -23,9 +23,16 @@ export function Navbar() {
             </a>
           ))}
         </nav>
-        <div className="hidden sm:block">
-          <Link href="/courses">
-            <Button variant="secondary">Start Learning</Button>
+        <div className="hidden items-center gap-3 sm:flex">
+          <Link href="/sign-in">
+            <Button variant="ghost">
+              Login
+            </Button>
+          </Link>
+          <Link href="/sign-up">
+            <Button variant="secondary">
+              Sign Up
+            </Button>
           </Link>
         </div>
       </Container>

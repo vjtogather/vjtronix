@@ -14,17 +14,17 @@ export const NAVIGATION = [
     href: "/projects",
   },
   {
-    title: "Courses",
-    href: "/courses",
-  },
-  {
-    title: "Shop",
-    href: "/shop",
-  },
-  {
     title: "Portfolio",
     href: "/portfolio",
   },
+  // {
+  //   title: "About",
+  //   href: "/about",
+  // },
+  // {
+  //   title: "Contact",
+  //   href: "/contact",
+  // },
   {
     title: "Videos",
     href: SITE.youtube,

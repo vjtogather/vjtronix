@@ -3,7 +3,6 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
-//import Nodemailer from "next-auth/providers/nodemailer";
 
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
@@ -71,17 +70,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     GitHub({
       allowDangerousEmailAccountLinking: false,
     }),
-    // Nodemailer({
-    //   from: getRequiredEnvironmentValue("AUTH_EMAIL_FROM"),
-    //   server: {
-    //     host: getRequiredEnvironmentValue("AUTH_EMAIL_SERVER_HOST"),
-    //     port: Number(process.env.AUTH_EMAIL_SERVER_PORT ?? 587),
-    //     auth: {
-    //       user: getRequiredEnvironmentValue("AUTH_EMAIL_SERVER_USER"),
-    //       pass: getRequiredEnvironmentValue("AUTH_EMAIL_SERVER_PASSWORD"),
-    //     },
-    //   },
-    // }),
   ],
   callbacks: {
     async signIn({ user }) {
@@ -101,13 +89,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return session;
       }
 
-      const userRoles = await prisma.userRole.findMany({
-        where: { userId: token.sub },
-        select: { role: { select: { name: true } } },
-      });
-
       session.user.id = token.sub;
-      session.user.roles = userRoles.map(({ role }) => role.name) as RoleName[];
+      session.user.roles = [];
+
+      try {
+        const userRoles = await prisma.userRole.findMany({
+          where: { userId: token.sub },
+          select: { role: { select: { name: true } } },
+        });
+
+        session.user.roles = userRoles.map(({ role }) => role.name) as RoleName[];
+      } catch {
+        // A role lookup must not turn an otherwise valid session into a blank page.
+      }
 
       return session;
     },
@@ -127,36 +121,43 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         update: {},
       });
 
-      await prisma.$transaction([
-        prisma.userRole.upsert({
-          where: {
-            userId_roleId: {
-              userId: user.id,
-              roleId: customerRole.id,
-            },
-          },
-          create: {
+      await prisma.userRole.upsert({
+        where: {
+          userId_roleId: {
             userId: user.id,
             roleId: customerRole.id,
           },
-          update: {},
-        }),
-        prisma.auditLog.create({
+        },
+        create: {
+          userId: user.id,
+          roleId: customerRole.id,
+        },
+        update: {},
+      });
+
+      try {
+        await prisma.auditLog.create({
           data: {
             actorId: user.id,
             event: "AUTH_USER_CREATED",
           },
-        }),
-      ]);
+        });
+      } catch {
+        // Audit logging is best-effort and must not block user provisioning.
+      }
     },
     async signIn({ user, account }) {
-      await prisma.auditLog.create({
-        data: {
-          actorId: user.id,
-          event: "AUTH_SIGN_IN",
-          metadata: account ? { provider: account.provider } : undefined,
-        },
-      });
+      try {
+        await prisma.auditLog.create({
+          data: {
+            actorId: user.id,
+            event: "AUTH_SIGN_IN",
+            metadata: account ? { provider: account.provider } : undefined,
+          },
+        });
+      } catch {
+        // Audit logging is best-effort and must not prevent a successful sign-in.
+      }
     },
     async signOut(message) {
       const actorId =
@@ -166,12 +167,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return;
       }
 
-      await prisma.auditLog.create({
-        data: {
-          actorId,
-          event: "AUTH_SIGN_OUT",
-        },
-      });
+      try {
+        await prisma.auditLog.create({
+          data: {
+            actorId,
+            event: "AUTH_SIGN_OUT",
+          },
+        });
+      } catch {
+        // Audit logging is best-effort and must not prevent a successful sign-out.
+      }
     },
   },
 });

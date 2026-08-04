@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 
 export default async function ProfilePage() {
   const session = await requireUser();
-  const user = await prisma.user.findUniqueOrThrow({
+  const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { createdAt: true, emailVerified: true, image: true, name: true, password: true, phone: true },
   });
-  const accounts = await prisma.account.findMany({ where: { userId: session.user.id, provider: { in: ["google", "github"] } }, select: { provider: true } });
+  const accounts = await prisma.account.findMany({ where: { userId: session.user.id, provider: { in: ["google", "github"] } }, select: { provider: true } }).catch(() => []);
   return (
     <div className="space-y-6 p-5 sm:p-8 lg:p-10">
       <div>
@@ -26,15 +26,15 @@ export default async function ProfilePage() {
         <p className="mt-2 text-sm leading-6 text-slate-400">Your identity and access details for VJtronix.</p>
       </div>
 
-      <ProfileForms hasPassword={Boolean(user.password)} user={{ email: session.user.email || null, image: user.image, name: user.name, phone: user.phone }} />
+      <ProfileForms hasPassword={Boolean(user?.password)} user={{ email: session.user.email || null, image: user?.image || session.user.image || null, name: user?.name || session.user.name || null, phone: user?.phone || null }} />
 
       <div className="grid gap-6 xl:grid-cols-2">
         <Card>
           <CardHeader><CardTitle>Profile details</CardTitle><CardDescription>Information associated with your account.</CardDescription></CardHeader>
           <CardContent className="space-y-5">
             <Detail icon={Mail} label="Email address" value={session.user.email || "Not available"} />
-            <Detail icon={BadgeCheck} label="Email status" value={user.emailVerified ? "Verified" : "Not verified"} />
-            <Detail icon={ShieldCheck} label="Member since" value={new Intl.DateTimeFormat("en", { day: "numeric", month: "long", year: "numeric" }).format(user.createdAt)} />
+            <Detail icon={BadgeCheck} label="Email status" value={user?.emailVerified ? "Verified" : "Not verified"} />
+            <Detail icon={ShieldCheck} label="Member since" value={user ? new Intl.DateTimeFormat("en", { day: "numeric", month: "long", year: "numeric" }).format(user.createdAt) : "Unavailable"} />
           </CardContent>
         </Card>
         <Card>

@@ -18,18 +18,18 @@ export const metadata: Metadata = {
 export default async function AccountPage() {
   const session = await requireUser();
   const [user, sessionCount, activityCount, activities] = await Promise.all([
-    prisma.user.findUniqueOrThrow({
+    prisma.user.findUnique({
       where: { id: session.user.id },
       select: { createdAt: true },
     }),
-    prisma.session.count({ where: { userId: session.user.id, expires: { gt: new Date() } } }),
-    prisma.auditLog.count({ where: { actorId: session.user.id } }),
-    prisma.auditLog.findMany({
+    optionalQuery(() => prisma.session.count({ where: { userId: session.user.id, expires: { gt: new Date() } } }), 0),
+    optionalQuery(() => prisma.auditLog.count({ where: { actorId: session.user.id } }), 0),
+    optionalQuery(() => prisma.auditLog.findMany({
       where: { actorId: session.user.id },
       orderBy: { createdAt: "desc" },
       take: 5,
       select: { id: true, event: true, createdAt: true },
-    }),
+    }), []),
   ]);
   const name = session.user.name || "there";
   const initials = (session.user.name || session.user.email || "VJ")
@@ -38,7 +38,9 @@ export default async function AccountPage() {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join("");
-  const joinedAt = new Intl.DateTimeFormat("en", { month: "short", year: "numeric" }).format(user.createdAt);
+  const joinedAt = user
+    ? new Intl.DateTimeFormat("en", { month: "short", year: "numeric" }).format(user.createdAt)
+    : "Unavailable";
 
   return (
     <div className="space-y-6 p-5 sm:p-8 lg:p-10">
@@ -114,3 +116,11 @@ function StatCard({ icon: Icon, label, value }: { icon: typeof Activity; label: 
 
 function formatEvent(event: string) { return event.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (character) => character.toUpperCase()); }
 function formatDate(date: Date) { return new Intl.DateTimeFormat("en", { day: "numeric", month: "short", year: "numeric" }).format(date); }
+
+async function optionalQuery<T>(query: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await query();
+  } catch {
+    return fallback;
+  }
+}
