@@ -54,7 +54,16 @@ export default async function CategoriesPage({ searchParams }: { searchParams: P
             <select className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm" defaultValue={status || ""} name="status"><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="INACTIVE">Inactive</option></select>
             <button className="h-8 rounded-lg border border-input px-3 text-sm font-medium transition hover:bg-muted" type="submit">Filter</button>
           </form>
-          {categories.length ? <CategoryTable categories={categories.map((category) => ({ ...category, createdAt: category.createdAt.toISOString(), updatedAt: category.updatedAt.toISOString(), postCount: category._count.posts + category._count.blogs }))} /> : <EmptyState />}
+          <CategoryTable
+  categories={categories.map((category) => ({
+    ...category,
+    createdAt: category.createdAt.toISOString(),
+    updatedAt: category.updatedAt.toISOString(),
+    postCount: category._count.posts + category._count.blogs,
+  }))}
+/>
+
+{categories.length === 0 && <EmptyState />}
           {totalPages > 1 ? <Pagination page={page} search={search} status={status} totalPages={totalPages} /> : null}
         </CardContent>
       </Card>
