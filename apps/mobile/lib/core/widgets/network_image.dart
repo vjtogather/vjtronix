@@ -1,0 +1,3 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+class AppNetworkImage extends StatelessWidget { const AppNetworkImage({required this.url, required this.aspectRatio, super.key}); final String url; final double aspectRatio; @override Widget build(BuildContext context) => AspectRatio(aspectRatio: aspectRatio, child: ClipRRect(borderRadius: BorderRadius.circular(16), child: CachedNetworkImage(imageUrl: url, fit: BoxFit.cover, placeholder: (_, __) => const ColoredBox(color: Color(0x11000000)), errorWidget: (_, __, ___) => const ColoredBox(color: Color(0x11000000), child: Icon(Icons.image_not_supported))))); }
