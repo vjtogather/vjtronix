@@ -30,7 +30,7 @@ export function MediaLibraryEmptyState({ description, icon: Icon, title }: Media
                 <Icon className="size-6" aria-hidden="true" />
               </span>
               <h2 className="mt-4 font-semibold text-foreground">No {title.toLowerCase()} yet</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">Upload and organize brand assets from one central VJtronix media library.</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">Upload and organize brand assets from one central MicroHelp media library.</p>
               <Button className="mt-5" type="button" disabled>
                 <Upload className="size-4" aria-hidden="true" />
                 Upload {title.slice(0, -1)}

@@ -30,7 +30,7 @@ export function Features() {
             One ecosystem for practical technology education.
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-400">
-            VJtronix is designed as a modular platform, so each feature can grow
+            MicroHelp is designed as a modular platform, so each feature can grow
             independently without turning the codebase into a monolith of
             unrelated pages.
           </p>

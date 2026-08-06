@@ -39,7 +39,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8 p-5 sm:p-8 lg:p-10">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-semibold tracking-[0.16em] text-sky-600 uppercase dark:text-sky-300">VJtronix workspace</p>
+          <p className="text-sm font-semibold tracking-[0.16em] text-sky-600 uppercase dark:text-sky-300">MicroHelp workspace</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Dashboard</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">A focused view of your platform, content, and community activity.</p>
         </div>

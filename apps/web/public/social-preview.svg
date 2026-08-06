@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="MicroHelp: Empowering the Next Generation of Embedded Engineers">
+  <rect width="1200" height="630" fill="#0B1220"/>
+  <circle cx="1030" cy="80" r="340" fill="#0EA5FF" opacity=".14"/><circle cx="180" cy="640" r="300" fill="#2563EB" opacity=".18"/>
+  <rect x="100" y="115" width="96" height="96" rx="24" fill="#0EA5FF"/><path fill="#fff" d="M121 184v-42h15l18 27 18-27h15v42h-14v-20l-19 29-19-29v20z"/>
+  <text x="100" y="295" fill="#fff" font-family="Arial, sans-serif" font-size="82" font-weight="700">MicroHelp</text>
+  <text x="100" y="380" fill="#B8DFFF" font-family="Arial, sans-serif" font-size="48" font-weight="700">Learn Embedded. Build the Future.</text>
+  <text x="100" y="455" fill="#D5E4F5" font-family="Arial, sans-serif" font-size="29">Embedded Systems · Firmware · Linux · IoT · Robotics</text>
+  <text x="100" y="530" fill="#0EA5FF" font-family="Arial, sans-serif" font-size="25">microhelp.in</text>
+</svg>

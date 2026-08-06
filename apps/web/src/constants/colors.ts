@@ -1,9 +1,9 @@
 export const BRAND_COLORS = {
-  background: "#05070a",
-  surface: "#0d1117",
-  surfaceMuted: "#111827",
-  border: "#1f2937",
-  primary: "#38bdf8",
-  secondary: "#34d399",
-  accent: "#a78bfa",
+  background: "#0B1220",
+  surface: "#101A2D",
+  surfaceMuted: "#17233A",
+  border: "#263653",
+  primary: "#0EA5FF",
+  secondary: "#2563EB",
+  accent: "#FFFFFF",
 } as const;

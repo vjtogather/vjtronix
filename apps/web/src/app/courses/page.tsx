@@ -19,7 +19,7 @@ export default function CoursesPage() {
         description="Professional Embedded Engineering courses are under development."
         features={courseFeatures}
         illustration={BookOpen}
-        productName="VJtronix Courses"
+        productName="MicroHelp Courses"
       />
     </SiteShell>
   );

@@ -77,7 +77,7 @@ export function AdminShell({ children, isSuperAdmin, user }: AdminShellProps) {
       <Sheet open={isMobileNavigationOpen} onOpenChange={setIsMobileNavigationOpen}>
         <SheetContent side="left" className="w-[min(19rem,85vw)] border-border p-0" showCloseButton>
           <SheetHeader className="border-b">
-            <SheetTitle>VJtronix Admin</SheetTitle>
+            <SheetTitle>MicroHelp Admin</SheetTitle>
           </SheetHeader>
           <div className="p-4">
             <AdminSidebar isSuperAdmin={isSuperAdmin} onNavigate={() => setIsMobileNavigationOpen(false)} />

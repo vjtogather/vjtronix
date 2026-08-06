@@ -57,7 +57,7 @@ export default async function AccountPage() {
               <AvatarFallback className="bg-sky-300/15 text-sky-100">{initials}</AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-xl font-semibold text-white">Your VJtronix workspace</h2>
+              <h2 className="text-xl font-semibold text-white">Your MicroHelp workspace</h2>
               <p className="mt-1 text-sm text-slate-300">Manage your profile and keep track of your activity in one place.</p>
             </div>
           </div>

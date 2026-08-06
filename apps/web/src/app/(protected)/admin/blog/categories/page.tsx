@@ -39,7 +39,7 @@ export default async function CategoriesPage({ searchParams }: { searchParams: P
           <Link className="text-sm font-medium text-sky-700 hover:text-sky-600 dark:text-sky-300 dark:hover:text-sky-200" href="/admin/blog">← Back to blogs</Link>
           <p className="mt-5 text-sm font-semibold tracking-[0.16em] text-sky-600 uppercase dark:text-sky-300">Content</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Categories</h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Organize VJtronix content with searchable, SEO-ready categories.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Organize MicroHelp content with searchable, SEO-ready categories.</p>
         </div>
       </div>
 

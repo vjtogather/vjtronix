@@ -25,7 +25,7 @@ export default async function SettingsPage() {
         <Card>
           <CardHeader><CardTitle>Profile information</CardTitle><CardDescription>Your display name and account identity are managed in your profile.</CardDescription></CardHeader>
           <CardContent className="flex items-center justify-between gap-4 rounded-b-xl border-t border-white/10 bg-white/[0.025] py-4">
-            <div className="flex min-w-0 items-center gap-3"><UserRound className="size-5 shrink-0 text-sky-300" aria-hidden="true" /><p className="truncate text-sm text-slate-300">{session.user.name || session.user.email || "VJtronix member"}</p></div>
+            <div className="flex min-w-0 items-center gap-3"><UserRound className="size-5 shrink-0 text-sky-300" aria-hidden="true" /><p className="truncate text-sm text-slate-300">{session.user.name || session.user.email || "MicroHelp member"}</p></div>
             <Link className="shrink-0 text-sm font-medium text-sky-200 hover:text-sky-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300" href="/account/profile">View profile</Link>
           </CardContent>
         </Card>

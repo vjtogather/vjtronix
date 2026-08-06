@@ -131,7 +131,7 @@ export const PLATFORM_PAGES: Record<PlatformPageSlug, PlatformPage> = {
     title: "Portfolio",
     eyebrow: "Work showcase",
     description:
-      "A professional portfolio for VJtronix work, engineering experiments, open-source contributions, and product milestones.",
+      "A professional portfolio for MicroHelp work, engineering experiments, open-source contributions, and product milestones.",
     primaryAction: {
       label: "View Portfolio",
       href: "/portfolio",

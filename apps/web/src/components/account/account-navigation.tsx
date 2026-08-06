@@ -58,7 +58,7 @@ export function AccountNavigation({ user }: AccountNavigationProps) {
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-white">{user.name || "VJtronix member"}</p>
+              <p className="truncate text-sm font-medium text-white">{user.name || "MicroHelp member"}</p>
               <p className="truncate text-xs text-slate-500">{user.email || "No email address"}</p>
             </div>
           </div>

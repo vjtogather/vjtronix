@@ -122,7 +122,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
               <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-2">
                   <UserRound className="size-4" />
-                  {blog.author.name || "VJtronix"}
+                  {blog.author.name || "MicroHelp"}
                 </span>
                 <span className="inline-flex items-center gap-2">
                   <CalendarDays className="size-4" />

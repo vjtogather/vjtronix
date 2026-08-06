@@ -6,7 +6,7 @@ import { MediaLibraryEmptyState } from "@/components/admin/media/media-library-e
 const mediaLibraries = {
   images: {
     title: "Images",
-    description: "Manage image assets used across VJtronix content and campaigns.",
+    description: "Manage image assets used across MicroHelp content and campaigns.",
     icon: Image,
   },
   videos: {

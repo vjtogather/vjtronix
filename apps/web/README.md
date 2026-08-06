@@ -1,6 +1,6 @@
-# VJtronix Web
+# MicroHelp Web
 
-Public-facing web application for VJtronix, built with Next.js 15, React 19, TypeScript, and Tailwind CSS v4.
+Public-facing web application for MicroHelp, India's learning platform for Embedded Systems, Firmware Development, Linux, C/C++, IoT, Robotics, and Open Source. Built with Next.js 15, React 19, TypeScript, and Tailwind CSS v4.
 
 ## Current Scope
 

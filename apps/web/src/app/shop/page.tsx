@@ -15,7 +15,7 @@ const shopFeatures = [
 
 export const metadata: Metadata = {
   title: "Shop Coming Soon",
-  description: "VJtronix is building India's first Embedded Engineering Marketplace.",
+  description: "MicroHelp is building India's Embedded Engineering Marketplace.",
 };
 
 export default function ShopPage() {
@@ -26,7 +26,7 @@ export default function ShopPage() {
         description="We are building India's first Embedded Engineering Marketplace."
         features={shopFeatures}
         illustration={CircuitBoard}
-        productName="the VJtronix Shop"
+        productName="the MicroHelp Shop"
       />
     </SiteShell>
   );

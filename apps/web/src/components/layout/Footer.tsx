@@ -112,9 +112,9 @@ export function Footer() {
 
       <Container className="border-t border-white/10 py-6">
         <p className="text-center text-sm text-slate-500">
-          © {new Date().getFullYear()} {SITE.name}. All Rights Reserved.
+          © 2026 {SITE.name}. All Rights Reserved.
           <br />
-          Designed & Developed by <strong>{SITE.author}</strong>.
+          {SITE.tagline}
         </p>
       </Container>
     </footer>

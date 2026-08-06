@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" role="img" aria-label="MicroHelp">
+  <rect width="72" height="72" rx="18" fill="#2563EB"/>
+  <path fill="#fff" d="M18 49V23h9l9 14 9-14h9v26h-8V35L36 50 26 35v14z"/>
+  <text x="88" y="47" fill="#0B1220" font-family="Arial, sans-serif" font-size="34" font-weight="700">MicroHelp</text>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MicroHelp">
+  <rect width="512" height="512" rx="112" fill="#0B1220"/>
+  <rect x="56" y="56" width="400" height="400" rx="88" fill="#0EA5FF"/>
+  <path fill="#fff" d="M120 345V167h61l75 113 75-113h61v178h-56V260l-80 119-80-119v85z"/>
+</svg>

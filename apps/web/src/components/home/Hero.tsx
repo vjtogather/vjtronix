@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/Container";
-import { SITE } from "@/constants/site";
 
 const metrics = [
   { label: "Core domains", value: "8+" },
@@ -18,22 +17,23 @@ export function Hero() {
       <Container className="relative grid min-h-[calc(100vh-4rem)] items-center gap-12 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
         <div className="max-w-3xl">
           <p className="inline-flex rounded-full border border-sky-300/20 bg-sky-300/10 px-3 py-1 text-sm font-medium text-sky-200">
-            Embedded Systems. AI. Robotics. Programming.
+            Embedded Systems · Firmware · Linux · IoT
           </p>
           <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[1.02] text-white sm:text-6xl lg:text-7xl">
-            {SITE.name}
+            Learn Embedded.
+            <br />
+            Build the Future.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">
-            A modern education and engineering platform for makers, students,
-            and professionals building real technology from firmware to full
-            stack systems.
+            Master Embedded Systems, Firmware, Linux, IoT, Robotics and C
+            Programming through practical projects and industry-focused learning.
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <Link href="/courses">
-              <Button>Explore Courses</Button>
+              <Button>Start Learning</Button>
             </Link>
             <Link href="/projects">
-              <Button variant="secondary">View Projects</Button>
+              <Button variant="secondary">Explore Projects</Button>
             </Link>
           </div>
           <dl className="mt-12 grid max-w-xl grid-cols-3 gap-4">
@@ -60,7 +60,7 @@ export function Hero() {
                 <span className="size-2.5 rounded-full bg-amber-300" />
                 <span className="size-2.5 rounded-full bg-emerald-400" />
                 <span className="ml-3 text-xs text-slate-500">
-                  vjtronix-platform.ts
+                  microhelp-platform.ts
                 </span>
               </div>
               <div className="space-y-5 p-5 font-mono text-sm leading-7 text-slate-300">

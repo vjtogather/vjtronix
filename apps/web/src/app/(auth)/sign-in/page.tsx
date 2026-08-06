@@ -40,10 +40,10 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
           className="text-sm font-medium text-sky-200 transition hover:text-sky-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300"
           href="/"
         >
-          ← Back to VJtronix
+          ← Back to MicroHelp
         </Link>
         <h1 className="mt-7 text-3xl font-semibold text-white" id="sign-in-title">
-          Sign in to VJtronix
+          Sign in to MicroHelp
         </h1>
         <p className="mt-3 text-sm leading-6 text-slate-400">
           Continue with a trusted provider or sign in with your email and password.
@@ -122,7 +122,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
           </button>
         </form>
         <p className="mt-6 text-center text-sm text-slate-400">
-          New to VJtronix?{" "}
+          New to MicroHelp?{" "}
           <Link className="font-medium text-sky-200 hover:text-sky-100" href="/sign-up">
             Create an account
           </Link>

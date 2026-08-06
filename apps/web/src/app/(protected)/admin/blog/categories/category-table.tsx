@@ -137,7 +137,7 @@ export function CategoryTable({ categories }: CategoryTableProps) {
         </table>
       </div>
 
-      <CategoryFormDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} title="Add category" description="Create a category for organizing VJtronix content." values={emptyCategory} onSubmit={createCategory} />
+      <CategoryFormDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} title="Add category" description="Create a category for organizing MicroHelp content." values={emptyCategory} onSubmit={createCategory} />
       <CategoryFormDialog open={Boolean(editingCategory)} onOpenChange={(open) => !open && setEditingCategory(null)} title="Edit category" description="Update category content, SEO details, and availability." values={editingCategory ?? emptyCategory} onSubmit={updateCategory} />
 
       <Dialog open={Boolean(categoryToDelete)} onOpenChange={(open) => !open && setCategoryToDelete(null)}>

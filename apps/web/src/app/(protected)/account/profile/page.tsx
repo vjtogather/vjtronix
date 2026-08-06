@@ -23,7 +23,7 @@ export default async function ProfilePage() {
       <div>
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-sky-300">Account</p>
         <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">Your profile</h1>
-        <p className="mt-2 text-sm leading-6 text-slate-400">Your identity and access details for VJtronix.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-400">Your identity and access details for MicroHelp.</p>
       </div>
 
       <ProfileForms hasPassword={Boolean(user?.password)} user={{ email: session.user.email || null, image: user?.image || session.user.image || null, name: user?.name || session.user.name || null, phone: user?.phone || null }} />
@@ -38,7 +38,7 @@ export default async function ProfilePage() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle>Access</CardTitle><CardDescription>Roles assigned to your VJtronix account.</CardDescription></CardHeader>
+          <CardHeader><CardTitle>Access</CardTitle><CardDescription>Roles assigned to your MicroHelp account.</CardDescription></CardHeader>
           <CardContent>
             {session.user.roles.length === 0 ? (
               <div className="rounded-lg border border-dashed border-white/15 bg-white/[0.025] p-6 text-center text-sm text-slate-500">No roles have been assigned to this account.</div>

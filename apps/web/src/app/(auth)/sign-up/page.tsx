@@ -22,7 +22,7 @@ export default function SignUpPage() {
           className="text-sm font-medium text-sky-200 transition hover:text-sky-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300"
           href="/"
         >
-          ← Back to VJtronix
+          ← Back to MicroHelp
         </Link>
         <h1 className="mt-7 text-3xl font-semibold text-white" id="sign-up-title">
           Create your account

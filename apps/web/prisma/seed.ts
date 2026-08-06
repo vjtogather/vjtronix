@@ -35,7 +35,7 @@ async function main() {
   });
 
   if (adminCount === 0) {
-    const adminEmail = process.env.ADMIN_EMAIL ?? "admin@vjtronix.in";
+    const adminEmail = process.env.ADMIN_EMAIL ?? "admin@microhelp.in";
     const adminName = process.env.ADMIN_NAME ?? "Administrator";
     const adminPassword = process.env.ADMIN_PASSWORD ?? "Admin1234!";
     const adminRole = await prisma.role.findUniqueOrThrow({ where: { name: RoleName.ADMIN } });

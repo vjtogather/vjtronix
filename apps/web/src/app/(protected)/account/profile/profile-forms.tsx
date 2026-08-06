@@ -103,7 +103,7 @@ export function ProfileForms({ hasPassword, user }: ProfileFormsProps) {
   return (
     <div className="grid gap-6 xl:grid-cols-2">
       <Card>
-        <CardHeader><CardTitle>Personal information</CardTitle><CardDescription>Update the details shown across your VJtronix account.</CardDescription></CardHeader>
+        <CardHeader><CardTitle>Personal information</CardTitle><CardDescription>Update the details shown across your MicroHelp account.</CardDescription></CardHeader>
         <CardContent>
           <form className="space-y-5" onSubmit={profileForm.handleSubmit(submitProfile)}>
             <div className="flex items-center gap-4">

@@ -15,7 +15,7 @@ type ComingSoonProps = {
 };
 
 /**
- * A reusable launch-state page for VJtronix products that are still in development.
+ * A reusable launch-state page for MicroHelp products that are still in development.
  */
 export function ComingSoon({
   title,
@@ -78,7 +78,7 @@ export function ComingSoon({
               <Illustration className="size-14 sm:size-16" strokeWidth={1.4} aria-hidden="true" />
             </div>
             <span className="absolute bottom-9 rounded-full border border-sky-500/20 bg-background/80 px-4 py-2 text-xs font-semibold tracking-[0.18em] text-sky-700 uppercase backdrop-blur dark:text-sky-200">
-              VJtronix Lab
+              MicroHelp Lab
             </span>
           </div>
         </div>

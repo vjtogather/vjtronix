@@ -1,26 +1,26 @@
 export const SITE = {
-  name: "VJtronix",
+  name: "MicroHelp",
 
-  tagline: "Learn • Build • Innovate",
+  tagline: "Empowering the Next Generation of Embedded Engineers.",
 
   description:
-    "Modern Embedded Systems, Electronics, Firmware Engineering and Programming Platform.",
+    "MicroHelp is India's Embedded Systems learning platform providing tutorials, projects, firmware development, Linux, IoT, Robotics, Embedded C/C++, interview preparation and open source resources.",
 
-  url: "https://vjtronix.in",
+  url: "https://microhelp.in",
 
-  author: "Vishwjeet Singh",
+  author: "MicroHelp",
 
-  email: "contact@vjtronix.in",
+  email: "contact@microhelp.in",
 
   phone: "+91 9899855965",
 
   whatsapp: "https://wa.me/919899855965",
 
-  github: "https://github.com/vjtogather",
+  github: "https://github.com/MicroHelp",
 
-  youtube: "https://www.youtube.com/@Vjtronix",
+  youtube: "https://www.youtube.com/@MicroHelp",
 
-  linkedin: "https://www.linkedin.com/in/vishwjeet-singh/",
+  linkedin: "https://www.linkedin.com/company/microhelp/",
 
-  instagram: "https://www.instagram.com/vjtogather/",
+  instagram: "https://www.instagram.com/microhelp/",
 } as const;
